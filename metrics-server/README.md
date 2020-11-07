@@ -5,6 +5,8 @@
 
 Tested with Metrics Server release v0.4.0 (<https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.4.0>)
 
+---
+
 ## Requirements
 
 * Nutanix Karbon 2.1.2 or later
