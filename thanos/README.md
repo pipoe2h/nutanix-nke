@@ -27,6 +27,12 @@
 
 3. Create an access key
 
+   ![Create bucket](images/01_objects_keys.png)
+
 4. Create a bucket, I called it `thanos`
 
-![](images/01_objects.png)
+   ![Create bucket](images/02_objects_bucket.png)
+
+5. Entitle user access
+
+   ![Create bucket](images/03_objects_useraccess.png)
