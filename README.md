@@ -6,3 +6,4 @@
 
 * [Kubernetes Dashboard](kubernetes-dashboard/README.md)
 
+* [Monitoring: Prometheus, Thanos and Nutanix Objects](thanos/README.md)
