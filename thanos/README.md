@@ -47,7 +47,7 @@ In this step you will create a Kubernetes secret with the keys you created in th
     mkdir secrets && cd secrets
     ```
 
-2. Create the following file replacing the `access_key` and `secret_key` with yours. This file will be used with Kubernetes Kustomize.
+2. Create the following file replacing the `access_key` and `secret_key` with yours. This file will be used with Kubernetes Kustomize
 
     ```shell
     cat <<EOF >./kustomization.yaml
@@ -59,3 +59,10 @@ In this step you will create a Kubernetes secret with the keys you created in th
             - secret_key=YOUR_SECRET_KEY_HERE
     EOF
     ```
+
+3. Generate Secret file
+
+    ```shell
+    kubectl kustomize . > ../secret.yaml
+    ```
+
