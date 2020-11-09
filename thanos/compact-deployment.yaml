@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thanos-compact
+  namespace: monitoring
+  labels:
+    app: thanos-compact
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thanos-compact
+  template:
+    metadata:
+      labels:
+        app: thanos-compact
+    spec:
+      containers:
+      - name: thanos-compact
+        image: quay.io/thanos/thanos:v0.16.0
+        args:
+        - compact
+        # - --log.level=debug
+        - --data-dir=/data
+        - --objstore.config-file=/tmp/thanos-storage-config.yaml
+        - --wait
+        ports:
+        - name: http
+          containerPort: 10902
+        livenessProbe:
+          httpGet:
+            port: 10902
+            path: /-/healthy
+        readinessProbe:
+          httpGet:
+            port: 10902
+            path: /-/ready
+        volumeMounts:
+          - mountPath: /tmp
+            name: thanos-storage-config
+            readOnly: false
+      volumes:
+        - name: thanos-storage-config
+          secret:
+            secretName: thanos-storage-config

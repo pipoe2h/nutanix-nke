@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: thanos-store-gateway
+  namespace: monitoring
+  labels:
+    app: thanos-store-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thanos-store-gateway
+  serviceName: thanos-store-gateway
+  template:
+    metadata:
+      labels:
+        app: thanos-store-gateway
+        thanos-store-api: "true"
+    spec:
+      containers:
+      - name: thanos
+        image: quay.io/thanos/thanos:v0.16.0
+        args:
+        - store
+        # - --log.level=debug
+        - --data-dir=/data
+        - --objstore.config-file=/tmp/thanos-storage-config.yaml
+        - --index-cache-size=500MB
+        - --chunk-pool-size=500MB
+        ports:
+        - name: http
+          containerPort: 10902
+        - name: grpc
+          containerPort: 10901
+        livenessProbe:
+          httpGet:
+            port: 10902
+            path: /-/healthy
+        readinessProbe:
+          httpGet:
+            port: 10902
+            path: /-/ready
+        volumeMounts:
+          - mountPath: /tmp
+            name: thanos-storage-config
+            readOnly: true
+      volumes:
+        - name: thanos-storage-config
+          secret:
+            secretName: thanos-storage-config
