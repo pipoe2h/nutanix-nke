@@ -24,9 +24,15 @@ spec:
         - store
         # - --log.level=debug
         - --data-dir=/data
-        - --objstore.config-file=/tmp/thanos-storage-config.yaml
+        - --objstore.config=$(OBJSTORE_CONFIG)
         - --index-cache-size=500MB
         - --chunk-pool-size=500MB
+        env:
+          - name: OBJSTORE_CONFIG
+            valueFrom:
+              secretKeyRef:
+                name: objects-thanos
+                key: objects.properties
         ports:
         - name: http
           containerPort: 10902
@@ -39,12 +45,4 @@ spec:
         readinessProbe:
           httpGet:
             port: 10902
-            path: /-/ready
-        volumeMounts:
-          - mountPath: /tmp
-            name: thanos-storage-config
-            readOnly: true
-      volumes:
-        - name: thanos-storage-config
-          secret:
-            secretName: thanos-storage-config
+            path: /-/ready           

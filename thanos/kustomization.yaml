@@ -1,0 +1,16 @@
+namespace: monitoring
+secretGenerator:
+- name: objects-thanos
+  files:
+    - objects.properties
+generatorOptions:
+  disableNameSuffixHash: true
+resources:
+- namespace.yaml
+- prometheus-rbac.yaml
+- prometheus.yaml
+- prometheus-service.yaml
+- store-deployment.yaml
+- compact-deployment.yaml
+- query-deployment.yaml
+- query-service.yaml

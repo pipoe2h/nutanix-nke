@@ -16,14 +16,20 @@ spec:
         app: thanos-compact
     spec:
       containers:
-      - name: thanos-compact
+      - name: thanos
         image: quay.io/thanos/thanos:v0.16.0
         args:
         - compact
         # - --log.level=debug
         - --data-dir=/data
-        - --objstore.config-file=/tmp/thanos-storage-config.yaml
+        - --objstore.config=$(OBJSTORE_CONFIG)
         - --wait
+        env:
+          - name: OBJSTORE_CONFIG
+            valueFrom:
+              secretKeyRef:
+                name: objects-thanos
+                key: objects.properties
         ports:
         - name: http
           containerPort: 10902
@@ -35,11 +41,3 @@ spec:
           httpGet:
             port: 10902
             path: /-/ready
-        volumeMounts:
-          - mountPath: /tmp
-            name: thanos-storage-config
-            readOnly: false
-      volumes:
-        - name: thanos-storage-config
-          secret:
-            secretName: thanos-storage-config

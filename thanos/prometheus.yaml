@@ -17,8 +17,8 @@ spec:
     baseImage: quay.io/thanos/thanos
     version: v0.16.0
     objectStorageConfig:
-      key: thanos-storage-config.yaml
-      name: thanos-storage-config
+      key: objects.properties
+      name: objects-thanos
     env:
       - name: AWS_ACCESS_KEY_ID
         valueFrom:

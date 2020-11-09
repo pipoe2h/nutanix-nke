@@ -37,31 +37,28 @@
 
     ![Create bucket](images/03_objects_useraccess.png)
 
-## Create Secret
+## Create Objects Secret
 
-In this step you will create a Kubernetes secret with the keys you created in the previous section.
+In this step you will create a Kubernetes secret with the configuration for Objects. You will need:
 
-1. Create a folder called `secrets` and move into it
+* The keys you created in the previous section
+
+* Bucket name
+
+* Objects URL
+
+In the folder along with the other YAML files create the following file replacing the `bucket`, `endpoint`, `access_key` and `secret_key` with yours. This file will be used with Kubernetes Kustomize later
 
     ```shell
-    mkdir secrets && cd secrets
-    ```
-
-2. Create the following file replacing the `access_key` and `secret_key` with yours. This file will be used with Kubernetes Kustomize
-
-    ```shell
-    cat <<EOF >./kustomization.yaml
-    namespace: monitoring
-    secretGenerator:
-        - name: objects-credentials
-        literals:
-            - access_key=YOUR_ACCESS_KEY_HERE
-            - secret_key=YOUR_SECRET_KEY_HERE
+    cat <<EOF >./objects.properties
+    type: s3
+    config:
+      region: us-east-1
+      bucket: YOUR_BUCKET_NAME_HERE
+      endpoint: YOUR_ENDPOINT_URL_HERE
+      access_key: YOUR_ACCESS_KEY_HERE
+      secret_key: YOUR_SECRET_KEY_HERE
+      http_config:
+        insecure_skip_verify: true
     EOF
-    ```
-
-3. Generate Secret file
-
-    ```shell
-    kubectl kustomize . > ../secret.yaml
     ```
