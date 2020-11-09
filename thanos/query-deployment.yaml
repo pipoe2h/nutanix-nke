@@ -20,7 +20,7 @@ spec:
         image: quay.io/thanos/thanos:v0.16.0
         args:
         - query
-        - --log.level=debug
+        # - --log.level=debug
         - --query.replica-label=replica
         - --store.sd-dns-resolver=miekgdns
         # - --store=dnssrv+_grpc._tcp.thanos-store-gateway.monitoring.svc.cluster.local

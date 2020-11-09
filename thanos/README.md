@@ -65,4 +65,3 @@ In this step you will create a Kubernetes secret with the keys you created in th
     ```shell
     kubectl kustomize . > ../secret.yaml
     ```
-
