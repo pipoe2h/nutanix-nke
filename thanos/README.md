@@ -1,4 +1,4 @@
-# Tutorial: Monitoring with Thanos and Nutanix Objects
+# Tutorial: Monitoring with Prometheus, Thanos and Nutanix Objects
 
 ---
 **NOTE**

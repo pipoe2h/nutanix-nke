@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thanos-query
+  namespace: monitoring
+  labels:
+    app: thanos-query
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thanos-query
+  template:
+    metadata:
+      labels:
+        app: thanos-query
+    spec:
+      containers:
+      - name: thanos-query
+        image: quay.io/thanos/thanos:v0.16.0
+        args:
+        - query
+        - --log.level=debug
+        - --query.replica-label=replica
+        - --store.sd-dns-resolver=miekgdns
+        # - --store=dnssrv+_grpc._tcp.thanos-store-gateway.monitoring.svc.cluster.local
+        - --store=dnssrv+thanos-store-gateway:10901
+        ports:
+        - name: http
+          containerPort: 10902
+        - name: grpc
+          containerPort: 10901
+        livenessProbe:
+          httpGet:
+            port: http
+            path: /-/healthy
+        readinessProbe:
+          httpGet:
+            port: http
+            path: /-/ready
