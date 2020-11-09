@@ -27,15 +27,15 @@
 
 3. Create an access key
 
-   ![Create bucket](images/01_objects_keys.png)
+    ![Create bucket](images/01_objects_keys.png)
 
 4. Create a bucket, I called it `thanos`
 
-   ![Create bucket](images/02_objects_bucket.png)
+    ![Create bucket](images/02_objects_bucket.png)
 
 5. Entitle user access
 
-   ![Create bucket](images/03_objects_useraccess.png)
+    ![Create bucket](images/03_objects_useraccess.png)
 
 ## Create Secret
 
@@ -43,19 +43,19 @@ In this step you will create a Kubernetes secret with the keys you created in th
 
 1. Create a folder called `secrets` and move into it
 
-```shell
-mkdir secrets && cd secrets
-```
+    ```shell
+    mkdir secrets && cd secrets
+    ```
 
 2. Create the following file replacing the `access_key` and `secret_key` with yours. This file will be used with Kubernetes Kustomize.
 
-   ```shell
-   cat <<EOF >./kustomization.yaml
-   namespace: monitoring
-   secretGenerator:
-     - name: objects-credentials
-       literals:
-         - access_key=YOUR_ACCESS_KEY_HERE
-         - secret_key=YOUR_SECRET_KEY_HERE
-   EOF
-   ```
+    ```shell
+    cat <<EOF >./kustomization.yaml
+    namespace: monitoring
+    secretGenerator:
+        - name: objects-credentials
+        literals:
+            - access_key=YOUR_ACCESS_KEY_HERE
+            - secret_key=YOUR_SECRET_KEY_HERE
+    EOF
+    ```
