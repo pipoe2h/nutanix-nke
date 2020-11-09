@@ -49,16 +49,16 @@ In this step you will create a Kubernetes secret with the configuration for Obje
 
 In the folder along with the other YAML files create the following file replacing the `bucket`, `endpoint`, `access_key` and `secret_key` with yours. This file will be used with Kubernetes Kustomize later
 
-    ```shell
-    cat <<EOF >./objects.properties
-    type: s3
-    config:
-      region: us-east-1
-      bucket: YOUR_BUCKET_NAME_HERE
-      endpoint: YOUR_ENDPOINT_URL_HERE
-      access_key: YOUR_ACCESS_KEY_HERE
-      secret_key: YOUR_SECRET_KEY_HERE
-      http_config:
-        insecure_skip_verify: true
-    EOF
-    ```
+```shell
+cat <<EOF >./objects.properties
+type: s3
+config:
+  region: us-east-1
+  bucket: YOUR_BUCKET_NAME_HERE
+  endpoint: YOUR_ENDPOINT_URL_HERE
+  access_key: YOUR_ACCESS_KEY_HERE
+  secret_key: YOUR_SECRET_KEY_HERE
+  http_config:
+    insecure_skip_verify: true
+EOF
+```
