@@ -62,3 +62,30 @@ config:
     insecure_skip_verify: true
 EOF
 ```
+
+## Update existing Prometheus
+
+Before you deploy an additional monitoring stack that includes an additional Prometheus, it's important you update the existing Prometheus deployment in `ntnx-system` namespace to only monitor this namespace and `kube-system` namespace.
+
+* Set labels for system namespaces
+
+```shell
+kubectl label ns/kube-system monitoring=k8s
+kubectl label ns/ntnx-system monitoring=k8s
+```
+
+* Patch existing Prometheus deployment to limit ServiceMonitors to `k8s` label
+
+```shell
+kubectl -n ntnx-system patch --type merge prometheus/k8s -p '{"spec":{"serviceMonitorNamespaceSelector":{"matchLabels":{"monitoring": "k8s"}}}}'
+```
+
+## Deploy Thanos
+
+In this step you will deploy a new Prometheus instance using the Prometheus Operator included in Karbon along with Thanos for metrics archiving in Nutanix Objects.
+
+Make sure you execute the following command within the folder.
+
+```shell
+kubectl apply -k .
+```
