@@ -89,3 +89,29 @@ Make sure you execute the following command within the folder.
 ```shell
 kubectl apply -k .
 ```
+
+## Testing
+
+1. Make Thanos accessible from your computer
+
+    ```shell
+    kubectl -n monitoring port-forward svc/thanos-query 9090:9090
+    ```
+
+2. Open [Thanos](http://localhost:9090)
+
+3. Check in the Thanos page the `Stores` section
+
+    ![Thanos Stores](images/04_thanos_stores.png)
+
+## Clean up
+
+```shell
+kubectl delete namespace monitoring
+```
+
+## Credits
+
+* Based on <https://medium.com/@christophe_99995/applications-metrics-monitoring-on-nutanix-karbon-c1d1158ebcfc>
+
+* Based on <https://www.metricfire.com/blog/ha-kubernetes-monitoring-using-prometheus-and-thanos/#Thanos-Store>
