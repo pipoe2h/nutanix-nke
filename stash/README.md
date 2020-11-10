@@ -41,40 +41,53 @@
 
 ## Install Stash Operator
 
-```shell
-helm repo add appscode https://charts.appscode.com/stable/
-helm repo update
-helm install stash appscode/stash \
-  --version v0.11.6 \
-  --namespace backup \
-  --set enableAnalytics=false \
-  --set-file license=license.txt
-```
+1. Create namespace
 
-Check Stash deployment
+    ```shell
+    kubectl create namespace backup
+    ```
 
-```shell
-$ kubectl get deployment --namespace backup -l "app.kubernetes.io/name=stash,app.kubernetes.io/instance=stash"
+2. Install Stash CRD
 
-NAME    READY   UP-TO-DATE   AVAILABLE   AGE
-stash   1/1     1            1           26s
+    Move into the Stash folder and make sure to have the `license.txt` file in the folder.
 
-$ kubectl get crd -l app.kubernetes.io/name=stash
-NAME                                      CREATED AT
-backupblueprints.stash.appscode.com       2020-11-10T07:25:57Z
-backupconfigurations.stash.appscode.com   2020-11-10T07:25:57Z
-backupsessions.stash.appscode.com         2020-11-10T07:25:57Z
-functions.stash.appscode.com              2020-11-10T07:25:58Z
-recoveries.stash.appscode.com             2020-11-10T07:25:57Z
-repositories.stash.appscode.com           2020-11-10T07:25:57Z
-restics.stash.appscode.com                2020-11-10T07:25:57Z
-restoresessions.stash.appscode.com        2020-11-10T07:25:57Z
-tasks.stash.appscode.com                  2020-11-10T07:25:58Z
-```
+    ```shell
+    helm repo add appscode https://charts.appscode.com/stable/
+    helm repo update
+    helm install stash appscode/stash \
+      --version v0.11.6 \
+      --namespace backup \
+      --set enableAnalytics=false \
+      --set-file license=license.txt
+    ```
 
-## Create Objects Secret
+3. Check Stash deployment
 
-In this step you will create a Kubernetes secret with the configuration for Objects. You will need:
+    ```shell
+    $ kubectl get deployment --namespace backup -l "app.kubernetes.io/name=stash,app.kubernetes.io/instance=stash"
+
+    NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+    stash   1/1     1            1           26s
+    ```
+
+    ```shell
+    $ kubectl get crd -l app.kubernetes.io/name=stash
+
+    NAME                                      CREATED AT
+    backupblueprints.stash.appscode.com       2020-11-10T07:25:57Z
+    backupconfigurations.stash.appscode.com   2020-11-10T07:25:57Z
+    backupsessions.stash.appscode.com         2020-11-10T07:25:57Z
+    functions.stash.appscode.com              2020-11-10T07:25:58Z
+    recoveries.stash.appscode.com             2020-11-10T07:25:57Z
+    repositories.stash.appscode.com           2020-11-10T07:25:57Z
+    restics.stash.appscode.com                2020-11-10T07:25:57Z
+    restoresessions.stash.appscode.com        2020-11-10T07:25:57Z
+    tasks.stash.appscode.com                  2020-11-10T07:25:58Z
+    ```
+
+## Create Stash Repository
+
+In this step you will create a Stash Repository CRD that maps with the Objects bucket `stash`. You will need:
 
 * The keys you created in the previous section
 
@@ -82,18 +95,51 @@ In this step you will create a Kubernetes secret with the configuration for Obje
 
 * Objects URL
 
-In the folder along with the other YAML files create the following file replacing the `bucket`, `endpoint`, `access_key` and `secret_key` with yours. This file will be used with Kubernetes Kustomize later
+* Objects CA certificate
 
-```shell
-cat <<EOF >./objects.properties
-type: s3
-config:
-  region: us-east-1
-  bucket: YOUR_BUCKET_NAME_HERE
-  endpoint: YOUR_ENDPOINT_URL_HERE
-  access_key: YOUR_ACCESS_KEY_HERE
-  secret_key: YOUR_SECRET_KEY_HERE
-  http_config:
-    insecure_skip_verify: true
-EOF
-```
+1. (Optional) If you have not downloaded the CA certificate, continue reading this. In the folder along with the other YAML files download the CA certificate for your Objects instance. Replace the `YOUR_ENDPOINT_URL_HERE` with yours. Ex: objects.nutanix.com
+
+    ```shell
+    openssl s_client -connect YOUR_ENDPOINT_URL_HERE:443 -showcerts 2>/dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > objects.pem
+    ```
+
+2. In the same folder create the following file replacing the values for `endpoint`, `bucket` and `prefix (optional)` with yours. This is the Stash CRD to create a repository for Objects.
+
+    ```shell
+    cat <<EOF >./stash-repository.yaml
+    apiVersion: stash.appscode.com/v1alpha1
+    kind: Repository
+    metadata:
+      name: objects-repo
+      namespace: backup
+    spec:
+      backend:
+        s3:
+          endpoint: YOUR_ENDPOINT_URL_HERE
+          bucket: YOUR_BUCKET_NAME_HERE
+          region: us-east-1
+          prefix: /backup/karbon/deployment/demo # (Optional) You can replace with the path to use in the bucket to store the backups
+        storageSecretName: objects-stash
+    EOF
+    ```
+
+3. Create another file for the Objects secret replacing the values for `RESTIC_PASSWORD`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` with yours.
+
+    ```shell
+    cat <<EOF >./kustomization.yaml
+    secretGenerator:
+    - name: objects-stash
+      literals:
+      - RESTIC_PASSWORD=YOUR_RESTIC_PASSWORD_HERE # Choose a new password
+      - AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_HERE
+      - AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY_HERE
+      files:
+      - CA_CERT_DATA
+    generatorOptions:
+      disableNameSuffixHash: true
+    resources:
+    - stash-repository.yaml
+    EOF
+    ```
+
+## Prepare 
