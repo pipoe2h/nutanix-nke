@@ -58,8 +58,19 @@ $ kubectl get deployment --namespace backup -l "app.kubernetes.io/name=stash,app
 
 NAME    READY   UP-TO-DATE   AVAILABLE   AGE
 stash   1/1     1            1           26s
-```
 
+$ kubectl get crd -l app.kubernetes.io/name=stash
+NAME                                      CREATED AT
+backupblueprints.stash.appscode.com       2020-11-10T07:25:57Z
+backupconfigurations.stash.appscode.com   2020-11-10T07:25:57Z
+backupsessions.stash.appscode.com         2020-11-10T07:25:57Z
+functions.stash.appscode.com              2020-11-10T07:25:58Z
+recoveries.stash.appscode.com             2020-11-10T07:25:57Z
+repositories.stash.appscode.com           2020-11-10T07:25:57Z
+restics.stash.appscode.com                2020-11-10T07:25:57Z
+restoresessions.stash.appscode.com        2020-11-10T07:25:57Z
+tasks.stash.appscode.com                  2020-11-10T07:25:58Z
+```
 
 ## Create Objects Secret
 
