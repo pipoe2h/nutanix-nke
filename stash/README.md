@@ -144,6 +144,15 @@ In this step you will create a Stash Repository CRD that maps with the Objects b
     EOF
     ```
 
+4. Create Objects secret and Stash repository using Kubernetes Kustomize. You must be in the directory with the generated YAML files.
+
+    ```shell
+    $ kubectl apply -k .
+
+    secret/objects-stash created
+    repository.stash.appscode.com/objects-repo created
+    ```
+
 ## Backup
 
 There is a demo application available in the `backup` folder ([file](backup/demo-workload-deployment.yaml)). The application is just a simple deployment with three replicas that have mounted a PVC. A file is written in the PVC for Stash to backup into Objects.
