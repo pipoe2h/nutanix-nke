@@ -1,0 +1,70 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: stash-sample-data
+  namespace: backup
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: stash-demo
+  name: stash-demo
+  namespace: backup
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: stash-demo
+  template:
+    metadata:
+      labels:
+        app: stash-demo
+      name: busybox
+    spec:
+      containers:
+      - args: ["echo sample_data > /source/data/data.txt && sleep 3000"]
+        command: ["/bin/sh", "-c"]
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        name: busybox
+        volumeMounts:
+        - mountPath: /source/data
+          name: source-data
+      restartPolicy: Always
+      volumes:
+      - name: source-data
+        persistentVolumeClaim:
+          claimName: stash-sample-data
+---
+apiVersion: stash.appscode.com/v1beta1
+kind: BackupConfiguration
+metadata:
+  name: deployment-backup
+  namespace: backup
+spec:
+  repository:
+    name: objects-repo
+  schedule: "*/5 * * * *"
+  target:
+    ref:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: stash-demo
+    volumeMounts:
+    - name: source-data
+      mountPath: /source/data
+    paths:
+    - /source/data
+    exclude:
+    - lost+found
+  retentionPolicy:
+    name: 'keep-last-5'
+    keepLast: 5
+    prune: true

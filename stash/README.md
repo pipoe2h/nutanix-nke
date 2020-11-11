@@ -1,4 +1,4 @@
-# Tutorial: Backup with Stash and Nutanix Objects
+# (WIP) Tutorial: Backup with Stash and Nutanix Objects
 
 ---
 **NOTE**
@@ -97,7 +97,9 @@ In this step you will create a Stash Repository CRD that maps with the Objects b
 
 * Objects CA certificate
 
-1. (Optional) If you have not downloaded the CA certificate, continue reading this. In the folder along with the other YAML files download the CA certificate for your Objects instance. Replace the `YOUR_ENDPOINT_URL_HERE` with yours. Ex: objects.nutanix.com
+---
+
+1. (Optional) If you have not downloaded the Objects CA certificate, continue with this step. In the folder along with the other YAML files download the CA certificate for your Objects instance. Replace the `YOUR_ENDPOINT_URL_HERE` with yours. Ex: objects.nutanix.com
 
     ```shell
     openssl s_client -connect YOUR_ENDPOINT_URL_HERE:443 -showcerts 2>/dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > objects.pem
@@ -142,4 +144,47 @@ In this step you will create a Stash Repository CRD that maps with the Objects b
     EOF
     ```
 
-## Prepare 
+## Backup
+
+There is a demo application available in the `backup` folder ([file](backup/demo-workload-deployment.yaml)). The application is just a simple deployment with three replicas that have mounted a PVC. A file is written in the PVC for Stash to backup into Objects.
+
+Within the stash folder run the following steps:
+
+1. Deploy application with backup configuration included. The backup job runs every 5 minutes ([know more](https://stash.run/docs/v2020.11.06/guides/latest/workloads/deployment/#backup)).
+
+    ```shell
+    $ kubectl apply -f backup/demo-workload-deployment.yaml
+
+    persistentvolumeclaim/stash-sample-data created
+    deployment.apps/stash-demo created
+    backupconfiguration.stash.appscode.com/deployment-backup created
+    ```
+
+2. Verify CronJob:
+
+    ```shell
+    $ kubectl -n backup get cronjob
+
+    NAME                             SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+    stash-backup-deployment-backup   */5 * * * *   False     0        2m46s           24m
+    ```
+
+3. Wait for BackupSession:
+
+    ```shell
+    $ watch -n 2 kubectl -n backup get backupsession
+
+    Every 2.0s: kubectl -n backup get backupsession                                                                       laptop: Tue Nov 10 19:14:21 2020
+
+    NAME                           INVOKER-TYPE          INVOKER-NAME        PHASE       AGE
+    deployment-backup-1605035407   BackupConfiguration   deployment-backup   Succeeded   4m14s
+    ```
+
+4. Verify Backup:
+
+    ```shell
+    $ kubectl -n backup get repository objects-repo
+
+    NAME           INTEGRITY   SIZE   SNAPSHOT-COUNT   LAST-SUCCESSFUL-BACKUP   AGE
+    objects-repo   true        12 B   5                2m52s                    18h
+    ```

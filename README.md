@@ -11,3 +11,5 @@ This repo covers the Art of Possible with Nutanix Karbon. If you have additional
 * [Kubernetes Dashboard](kubernetes-dashboard/README.md)
 
 * [Monitoring: Prometheus, Thanos and Nutanix Objects](thanos/README.md)
+
+* [Backup: Stash and Nutanix Objects](stash/README.md)
