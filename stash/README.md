@@ -63,8 +63,11 @@
 
 3. Check Stash deployment
 
-    ```shell
-    $ kubectl get deployment --namespace backup -l "app.kubernetes.io/name=stash,app.kubernetes.io/instance=stash"
+    ```console
+    kubectl get deployment --namespace backup -l "app.kubernetes.io/name=stash,app.kubernetes.io/instance=stash"
+    ```
+
+    ```
     NAME    READY   UP-TO-DATE   AVAILABLE   AGE
     stash   1/1     1            1           26s
     ```
