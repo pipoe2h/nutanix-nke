@@ -17,7 +17,7 @@
 
 * [Metrics Server](../metrics-server/README.md)
 
-* Available a Nutanix Objects instance 1.0 or later 
+* Available a Nutanix Objects instance 1.0 or later
 
 ## Create Bucket
 
@@ -49,7 +49,7 @@ In this step you will create a Kubernetes secret with the configuration for Obje
 
 In the folder along with the other YAML files create the following file replacing the `bucket`, `endpoint`, `access_key` and `secret_key` with yours. This file will be used with Kubernetes Kustomize later
 
-```shell
+```console
 cat <<EOF >./objects.properties
 type: s3
 config:
@@ -69,14 +69,14 @@ Before you deploy an additional monitoring stack that includes an additional Pro
 
 * Set labels for system namespaces
 
-```shell
+```console
 kubectl label ns/kube-system monitoring=k8s
 kubectl label ns/ntnx-system monitoring=k8s
 ```
 
 * Patch existing Prometheus deployment to limit ServiceMonitors to `k8s` label
 
-```shell
+```console
 kubectl -n ntnx-system patch --type merge prometheus/k8s -p '{"spec":{"serviceMonitorNamespaceSelector":{"matchLabels":{"monitoring": "k8s"}}}}'
 ```
 
@@ -86,7 +86,7 @@ In this step you will deploy a new Prometheus instance using the Prometheus Oper
 
 Make sure you execute the following command within the folder.
 
-```shell
+```console
 kubectl apply -k .
 ```
 
@@ -94,7 +94,7 @@ kubectl apply -k .
 
 1. Make Thanos accessible from your computer
 
-    ```shell
+    ```console
     kubectl -n monitoring port-forward svc/thanos-query 9090:9090
     ```
 
@@ -106,7 +106,7 @@ kubectl apply -k .
 
 ## Clean up
 
-```shell
+```console
 kubectl delete namespace monitoring
 ```
 

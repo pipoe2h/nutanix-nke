@@ -17,13 +17,13 @@
 
 ## Deploying the Dashboard UI
 
-```shell
+```console
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
 ```
 
 ## Accessing the Dashboard UI
 
-```shell
+```console
 kubectl proxy
 ```
 
@@ -31,7 +31,7 @@ The dashboard is available at <http://localhost:8001/api/v1/namespaces/kubernete
 
 ## Clean up
 
-```shell
+```console
 kubectl delete -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
 ```
 

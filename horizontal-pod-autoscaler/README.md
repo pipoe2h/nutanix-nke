@@ -17,27 +17,27 @@ Tested with Metrics Server release v0.4.0 (<https://github.com/kubernetes-sigs/m
 
 ## Create Temporary Namespace
 
-```shell
+```console
 kubectl create namespace karbon-demo-hpa
 ```
 
 ## Create Demo PHP Deployment
 
-```shell
+```console
 kubectl -n karbon-demo-hpa apply -f https://raw.githubusercontent.com/kubernetes/website/master/content/en/examples/application/php-apache.yaml
 ```
 
 ## Create Horizontal Pod Autoscaler
 
-```shell
+```console
 kubectl -n karbon-demo-hpa autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10
 ```
 
-```shell
+```console
 kubectl -n karbon-demo-hpa get hpa
 ```
 
-```shell
+```console
 NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 php-apache   Deployment/php-apache   0%/50%    1         10        1          6m3s
 ```
@@ -53,26 +53,26 @@ You'll need two terminals: one for running the test, another for checking the `h
 
 * Increase load (terminal one):
 
-```shell
+```console
 kubectl -n karbon-demo-hpa run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
 ```
 
 * Check load (terminal two) after about a minute:
 
-```shell
+```console
 kubectl -n karbon-demo-hpa get hpa
 ```
 
-```shell
+```console
 NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 php-apache   Deployment/php-apache   350%/50%   1         10        7          6m35s
 ```
 
-```shell
+```console
 kubectl -n karbon-demo-hpa get deployment php-apache
 ```
 
-```shell
+```console
 NAME         READY   UP-TO-DATE   AVAILABLE   AGE
 php-apache   7/7     7            7           13m
 ```
@@ -83,18 +83,18 @@ php-apache   7/7     7            7           13m
 
 2. After a minute or more, check the status for hpa:
 
-```shell
+```console
 kubectl -n karbon-demo-hpa get hpa
 ```
 
-```shell
+```console
 NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 php-apache   Deployment/php-apache   0%/50%    1         10        7          16m
 ```
 
 ## Clean up
 
-```shell
+```console
 kubectl delete namespace karbon-demo-hpa
 ```
 

@@ -17,8 +17,8 @@ Tested with Metrics Server release v0.4.0 (<https://github.com/kubernetes-sigs/m
 
 This installs latest Metrics Server release in kube-system namespace:
 
-```shell
-$ kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```console
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
 
 ## Configuration
@@ -29,7 +29,7 @@ Nutanix Karbon configurations requires:
 
 * `--kubelet-insecure-tls`
 
-```shell
+```console
 $ kubectl -n kube-system patch deployment metrics-server --type='json' -p '[
     {
         "op": "replace",
@@ -51,8 +51,8 @@ To check Metrics Server is working as expected.
 
 * For node metrics:
 
-```shell
-$ kubectl top nodes
+```console
+kubectl top nodes
 ```
 
 ```
@@ -63,8 +63,8 @@ karbon-jg-metrics-49f34f-k8s-worker-0   258m         3%     3935Mi          53%
 
 * For pod metrics:
 
-```shell
-$ kubectl top pods
+```console
+kubectl top pods
 ```
 
 ```

@@ -43,7 +43,7 @@
 
 1. Create namespace
 
-    ```shell
+    ```console
     kubectl create namespace backup
     ```
 
@@ -51,7 +51,7 @@
 
     Move into the Stash folder and make sure to have the `license.txt` file in the folder.
 
-    ```shell
+    ```console
     helm repo add appscode https://charts.appscode.com/stable/
     helm repo update
     helm install stash appscode/stash \
@@ -63,14 +63,14 @@
 
 3. Check Stash deployment
 
-    ```shell
+    ```console
     $ kubectl get deployment --namespace backup -l "app.kubernetes.io/name=stash,app.kubernetes.io/instance=stash"
 
     NAME    READY   UP-TO-DATE   AVAILABLE   AGE
     stash   1/1     1            1           26s
     ```
 
-    ```shell
+    ```console
     $ kubectl get crd -l app.kubernetes.io/name=stash
 
     NAME                                      CREATED AT
@@ -101,13 +101,13 @@ In this step you will create a Stash Repository CRD that maps with the Objects b
 
 1. (Optional) If you have not downloaded the Objects CA certificate, continue with this step. In the folder along with the other YAML files download the CA certificate for your Objects instance. Replace the `YOUR_ENDPOINT_URL_HERE` with yours. Ex: objects.nutanix.com
 
-    ```shell
+    ```console
     openssl s_client -connect YOUR_ENDPOINT_URL_HERE:443 -showcerts 2>/dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > objects.pem
     ```
 
 2. In the same folder create the following file replacing the values for `endpoint`, `bucket` and `prefix (optional)` with yours. This is the Stash CRD to create a repository for Objects.
 
-    ```shell
+    ```console
     cat <<EOF >./stash-repository.yaml
     apiVersion: stash.appscode.com/v1alpha1
     kind: Repository
@@ -127,7 +127,7 @@ In this step you will create a Stash Repository CRD that maps with the Objects b
 
 3. Create another file for the Objects secret replacing the values for `RESTIC_PASSWORD`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` with yours.
 
-    ```shell
+    ```console
     cat <<EOF >./kustomization.yaml
     secretGenerator:
     - name: objects-stash
@@ -146,7 +146,7 @@ In this step you will create a Stash Repository CRD that maps with the Objects b
 
 4. Create Objects secret and Stash repository using Kubernetes Kustomize. You must be in the directory with the generated YAML files.
 
-    ```shell
+    ```console
     $ kubectl apply -k .
 
     secret/objects-stash created
@@ -161,7 +161,7 @@ Within the stash folder run the following steps:
 
 1. Deploy application with backup configuration included. The backup job runs every 5 minutes ([know more](https://stash.run/docs/v2020.11.06/guides/latest/workloads/deployment/#backup)).
 
-    ```shell
+    ```console
     $ kubectl apply -f backup/demo-workload-deployment.yaml
 
     persistentvolumeclaim/stash-sample-data created
@@ -171,7 +171,7 @@ Within the stash folder run the following steps:
 
 2. Verify CronJob:
 
-    ```shell
+    ```console
     $ kubectl -n backup get cronjob
 
     NAME                             SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
@@ -180,7 +180,7 @@ Within the stash folder run the following steps:
 
 3. Wait for BackupSession:
 
-    ```shell
+    ```console
     $ watch -n 2 kubectl -n backup get backupsession
 
     Every 2.0s: kubectl -n backup get backupsession                                                                       laptop: Tue Nov 10 19:14:21 2020
@@ -191,7 +191,7 @@ Within the stash folder run the following steps:
 
 4. Verify Backup:
 
-    ```shell
+    ```console
     $ kubectl -n backup get repository objects-repo
 
     NAME           INTEGRITY   SIZE   SNAPSHOT-COUNT   LAST-SUCCESSFUL-BACKUP   AGE
