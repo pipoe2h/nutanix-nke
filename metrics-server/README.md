@@ -30,7 +30,7 @@ Nutanix Karbon configurations requires:
 * `--kubelet-insecure-tls`
 
 ```console
-$ kubectl -n kube-system patch deployment metrics-server --type='json' -p '[
+kubectl -n kube-system patch deployment metrics-server --type='json' -p '[
     {
         "op": "replace",
         "path": "/spec/template/spec/containers/0/args",

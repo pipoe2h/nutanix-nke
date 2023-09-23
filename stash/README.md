@@ -64,15 +64,19 @@
 3. Check Stash deployment
 
     ```console
-    $ kubectl get deployment --namespace backup -l "app.kubernetes.io/name=stash,app.kubernetes.io/instance=stash"
+    kubectl get deployment --namespace backup -l "app.kubernetes.io/name=stash,app.kubernetes.io/instance=stash"
+    ```
 
+    ```
     NAME    READY   UP-TO-DATE   AVAILABLE   AGE
     stash   1/1     1            1           26s
     ```
 
     ```console
-    $ kubectl get crd -l app.kubernetes.io/name=stash
+    kubectl get crd -l app.kubernetes.io/name=stash
+    ```
 
+    ```
     NAME                                      CREATED AT
     backupblueprints.stash.appscode.com       2020-11-10T07:25:57Z
     backupconfigurations.stash.appscode.com   2020-11-10T07:25:57Z
@@ -147,8 +151,10 @@ In this step you will create a Stash Repository CRD that maps with the Objects b
 4. Create Objects secret and Stash repository using Kubernetes Kustomize. You must be in the directory with the generated YAML files.
 
     ```console
-    $ kubectl apply -k .
+    kubectl apply -k .
+    ```
 
+    ```
     secret/objects-stash created
     repository.stash.appscode.com/objects-repo created
     ```
@@ -162,8 +168,10 @@ Within the stash folder run the following steps:
 1. Deploy application with backup configuration included. The backup job runs every 5 minutes ([know more](https://stash.run/docs/v2020.11.06/guides/latest/workloads/deployment/#backup)).
 
     ```console
-    $ kubectl apply -f backup/demo-workload-deployment.yaml
+    kubectl apply -f backup/demo-workload-deployment.yaml
+    ```
 
+    ```
     persistentvolumeclaim/stash-sample-data created
     deployment.apps/stash-demo created
     backupconfiguration.stash.appscode.com/deployment-backup created
@@ -172,8 +180,10 @@ Within the stash folder run the following steps:
 2. Verify CronJob:
 
     ```console
-    $ kubectl -n backup get cronjob
+    kubectl -n backup get cronjob
+    ```
 
+    ```
     NAME                             SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
     stash-backup-deployment-backup   */5 * * * *   False     0        2m46s           24m
     ```
@@ -181,8 +191,10 @@ Within the stash folder run the following steps:
 3. Wait for BackupSession:
 
     ```console
-    $ watch -n 2 kubectl -n backup get backupsession
+    watch -n 2 kubectl -n backup get backupsession
+    ```
 
+    ```
     Every 2.0s: kubectl -n backup get backupsession                                                                       laptop: Tue Nov 10 19:14:21 2020
 
     NAME                           INVOKER-TYPE          INVOKER-NAME        PHASE       AGE
@@ -192,8 +204,10 @@ Within the stash folder run the following steps:
 4. Verify Backup:
 
     ```console
-    $ kubectl -n backup get repository objects-repo
+    kubectl -n backup get repository objects-repo
+    ```
 
+    ```
     NAME           INTEGRITY   SIZE   SNAPSHOT-COUNT   LAST-SUCCESSFUL-BACKUP   AGE
     objects-repo   true        12 B   5                2m52s                    18h
     ```
