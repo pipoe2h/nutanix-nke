@@ -3,3 +3,4 @@ license.txt
 CA_CERT_DATA
 stash/kustomization.yaml
 stash/stash-repository.yaml
+.envrc
