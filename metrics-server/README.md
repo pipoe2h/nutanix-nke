@@ -36,9 +36,10 @@ kubectl -n kube-system patch deployment metrics-server --type='json' -p '[
         "path": "/spec/template/spec/containers/0/args",
         "value": [
             "--cert-dir=/tmp",
-            "--secure-port=4443",
+            "--secure-port=10250",
             "--kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname",
             "--kubelet-use-node-status-port",
+            "--metric-resolution=15s",
             "--kubelet-insecure-tls"
         ]
     }
